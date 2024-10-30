@@ -8,7 +8,7 @@ import javax.swing.JOptionPane;
 
 public class ChargedDates {
 
-    static String archivoCSV = "C:\\Users\\ediso\\Desktop\\ProjectSC1\\src\\main\\java\\com\\mycompany\\projectsc1\\dates.csv";
+    static String archivoCSV = "src\\main\\java\\com\\mycompany\\projectsc1\\target\\resources\\dates.csv";
     
     public void charge() throws IOException{
         File fileCsv = new File(archivoCSV);
