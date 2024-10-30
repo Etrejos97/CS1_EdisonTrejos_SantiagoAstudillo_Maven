@@ -5,6 +5,7 @@
 package com.mycompany.projectsc1;
 
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -58,26 +59,29 @@ public class Member extends ClubMember implements ActionsPersons{
 
     @Override
     public void add() {
-        AuthorizedPersons newPerson;
-        Club club = new Club();
-        if(!isFull()){
-            String idMember = this.id;
-            String idPerson = JOptionPane.showInputDialog("Ingrese la cedula del nuevo autorizado: ");
-            if(club.exists(idPerson) || this.exists(idPerson)){
-                JOptionPane.showMessageDialog(null, "El socio o el autorizado con esta cedula ya existe.",
-                                             "Aviso", JOptionPane.WARNING_MESSAGE);
-                // menu.menu2(idMember);
-                
-            }else{
-                String namePerson = JOptionPane.showInputDialog("Ingrese el nombre del nuevo autorizado: ");
-                newPerson = new AuthorizedPersons(namePerson, idPerson, idMember);
-                authorizedPerson.put(newPerson.getId(), newPerson);
-                JOptionPane.showMessageDialog(null, "Autorizado agregado exitosamente. \n" +
-                                             "Información del autorizado: " + authorizedPerson.get(newPerson.getId()),
-                                             "Autorizado Agregado", JOptionPane.INFORMATION_MESSAGE);
+        try{
+            AuthorizedPersons newPerson;
+            Club club = new Club();
+            if(!isFull()){
+                String idMember = this.id;
+                String idPerson = JOptionPane.showInputDialog("Ingrese la cedula del nuevo autorizado: ");
+                if(club.exists(idPerson) || this.exists(idPerson)){
+                    JOptionPane.showMessageDialog(null, "El socio o el autorizado con esta cedula ya existe.",
+                                                "Aviso", JOptionPane.WARNING_MESSAGE);
+                    
+                }else{
+                    String namePerson = JOptionPane.showInputDialog("Ingrese el nombre del nuevo autorizado: ");
+                    newPerson = new AuthorizedPersons(namePerson, idPerson, idMember);
+                    authorizedPerson.put(newPerson.getId(), newPerson);
+                    JOptionPane.showMessageDialog(null, "Autorizado agregado exitosamente. \n" +
+                                                "Información del autorizado: " + authorizedPerson.get(newPerson.getId()),
+                                                "Autorizado Agregado", JOptionPane.INFORMATION_MESSAGE);
+                }
+            } else {
+                System.out.println("No se puede agregar más autorizados. Ha alcanzado el límite.");
             }
-        } else {
-            System.out.println("No se puede agregar más autorizados. Ha alcanzado el límite.");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Ha ocurrido un error inesperado: " + e.getMessage());
         }
     }
     @Override
@@ -101,7 +105,6 @@ public class Member extends ClubMember implements ActionsPersons{
 
             String idToDelete = JOptionPane.showInputDialog("Ingrese el ID de la persona a eliminar:");
 
-            // Verificar si la persona existe en el HashMap y eliminarla
             if (authorizedPerson.containsKey(idToDelete)) {
                 authorizedPerson.remove(idToDelete);
                 JOptionPane.showMessageDialog(null, "Persona eliminada exitosamente.");
@@ -109,43 +112,47 @@ public class Member extends ClubMember implements ActionsPersons{
                 JOptionPane.showMessageDialog(null, "No se encontró una persona con ese ID.");
             }
         } catch (NullPointerException e) {
-            JOptionPane.showMessageDialog(null, "Error: Ha ocurrido un problema al eliminar la persona.");
-            System.err.println("Error detallado: " + e.getMessage());
+            System.err.println("Error: Ocurrió un NullPointerException. Verifique los datos de entrada.");
+        } catch (ConcurrentModificationException e) {
+            System.err.println("Error: La lista de personas autorizadas ha sido modificada concurrentemente.");
         }
     }
     public void showPersonList() {
     
-    HashMap<String, AuthorizedPersons> authorizedPersons = this.authorizedPerson;
+        HashMap<String, AuthorizedPersons> authorizedPersons = this.authorizedPerson;
 
-    StringBuilder listPersons = new StringBuilder();
-    for (Map.Entry<String, AuthorizedPersons> entry : authorizedPersons.entrySet()) {
-        String id = entry.getKey();
-        String name = entry.getValue().getName(); 
-        listPersons.append(id).append(" - ").append(name).append("\n");
+        StringBuilder listPersons = new StringBuilder();
+        for (Map.Entry<String, AuthorizedPersons> entry : authorizedPersons.entrySet()) {
+            String id = entry.getKey();
+            String name = entry.getValue().getName(); 
+            listPersons.append(id).append(" - ").append(name).append("\n");
 
-        listPersons.append("--------------------\n");
+            listPersons.append("--------------------\n");
+        }
+
+        JOptionPane.showMessageDialog(null, listPersons.toString(), "Lista de Personas", JOptionPane.INFORMATION_MESSAGE);
     }
 
-    JOptionPane.showMessageDialog(null, listPersons.toString(), "Lista de Personas", JOptionPane.INFORMATION_MESSAGE);
-}
 
-
-public void addFounds(double foundsd, int n) {
-    if(n == 1 && this.availableFounds + foundsd > 5000000){
-        JOptionPane.showMessageDialog(null, "No se puede agregar más fondos. Ha superado el límite de 5 millones.",
-        "Aviso", JOptionPane.WARNING_MESSAGE);
-    }else if(n == 2 && this.availableFounds + foundsd > 1000000){
-        JOptionPane.showMessageDialog(null, "No se puede agregar más fondos. Ha superado el límite de 1 millón.",
-        "Aviso", JOptionPane.WARNING_MESSAGE);
-        }else{
-            this.availableFounds += foundsd;
-            JOptionPane.showMessageDialog(null, "Fondos agregados exitosamente. \n" +
-            "Fondos disponibles: $" + availableFounds,
-                                             "Fondos Agregados", JOptionPane.INFORMATION_MESSAGE);
-        }
+    public void addFounds(double foundsd, int n) {
+        if(n == 1 && this.availableFounds + foundsd > 5000000){
+            JOptionPane.showMessageDialog(null, "No se puede agregar más fondos. Ha superado el límite de 5 millones.",
+            "Aviso", JOptionPane.WARNING_MESSAGE);
+        }else if(n == 2 && this.availableFounds + foundsd > 1000000){
+            JOptionPane.showMessageDialog(null, "No se puede agregar más fondos. Ha superado el límite de 1 millón.",
+            "Aviso", JOptionPane.WARNING_MESSAGE);
+            }else{
+                this.availableFounds += foundsd;
+                JOptionPane.showMessageDialog(null, "Fondos agregados exitosamente. \n" +
+                "Fondos disponibles: $" + availableFounds,
+                                                "Fondos Agregados", JOptionPane.INFORMATION_MESSAGE);
+            }
     }
 
     public void addBill(double value,String concept){
+        if (value <= 0) {
+            throw new IllegalArgumentException("El valor de la factura debe ser positivo.");
+        }
         Bill bill = new Bill(value, id, false, concept);
         this.billList.add(bill);
         JOptionPane.showMessageDialog(null, "Factura agregada exitosamente. \n" +
@@ -199,6 +206,10 @@ public void addFounds(double foundsd, int n) {
             }
         }catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(null, "Ingrese un número válido.");
+        }catch (IndexOutOfBoundsException e) {
+            JOptionPane.showMessageDialog(null, "Índice de factura inválido.");
+        } catch (NullPointerException e) {
+            JOptionPane.showMessageDialog(null, "Error: Ocurrió un NullPointerException. Verifique los datos.");
         }
         
     }

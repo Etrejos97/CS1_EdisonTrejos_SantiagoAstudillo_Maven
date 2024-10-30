@@ -100,33 +100,32 @@ public class Club implements ActionsPersons{
     }
 
     public String suscriptionType(String op){
-        if (op.equals("1")) {
-            return "Vip";
-        } else {
-            return "Regular";
+        if (op == null) {
+            throw new IllegalArgumentException("la opcion no puede ser nula");
         }
+        return op.equals("1") ? "Vip" : "Regular";
     }
 
     public void showMembers() {
-    StringBuilder listString = new StringBuilder();
-    listString.append("Lista de socios:\n");
+        StringBuilder listString = new StringBuilder();
+        listString.append("Lista de socios:\n");
 
-    for (Map.Entry<String, Member> entry : members.entrySet()) {
-        String id = entry.getKey();
-        Member member = entry.getValue();
+        for (Map.Entry<String, Member> entry : members.entrySet()) {
+            String id = entry.getKey();
+            Member member = entry.getValue();
 
-        listString.append("ID: ").append(id).append(", Nombre: ")
-        .append(member.getName()).append(", Tipo: ")
-        .append(member.getSuscriptionType()).append("\n");
-        listString.append("Personas autorizadas: ").
-        append(member.getAuthorizedPerson().size()).append("\n");
+            listString.append("ID: ").append(id).append(", Nombre: ")
+            .append(member.getName()).append(", Tipo: ")
+            .append(member.getSuscriptionType()).append("\n");
+            listString.append("Personas autorizadas: ").
+            append(member.getAuthorizedPerson().size()).append("\n");
 
 
-        listString.append("--------------------\n");
+            listString.append("--------------------\n");
+        }
+
+        JOptionPane.showMessageDialog(null, listString.toString());
     }
-
-    JOptionPane.showMessageDialog(null, listString.toString());
-}
     @Override
     public void delete() {
         try{
