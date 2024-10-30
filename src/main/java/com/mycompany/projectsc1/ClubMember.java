@@ -8,7 +8,7 @@ package com.mycompany.projectsc1;
  *
  * @author Edison
  */
-public class ClubMember {
+abstract class ClubMember {
     protected String name, id;
 
     public ClubMember(String name, String id) {

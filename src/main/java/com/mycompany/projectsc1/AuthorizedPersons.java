@@ -9,25 +9,17 @@ package com.mycompany.projectsc1;
  * @author Edison
  */
 public class AuthorizedPersons extends ClubMember{
-    private Member member;
+    private String idMember;
 
 
-    public AuthorizedPersons(String name, String id, Member member) {
+    public AuthorizedPersons(String name, String id, String idMember) {
         super(name,id);
-        this.member = member;
-    }
-
-    public Member getMember() {
-        return member;
-    }
-
-    public void setMember(Member member) {
-        this.member = member;
+        this.idMember = idMember;
     }
 
     @Override
     public String toString() {
         return  "Cedula: "+ id + "\nNombre: " + name  +
-                "\nCedula del socio al que esta afiliado: " + member.getId();
+                "\nCedula del socio al que esta afiliado: " + idMember;
     }
 }
